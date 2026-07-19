@@ -16,6 +16,31 @@ import {
  */
 const composer = new Composer<Ctx>();
 
+// Handle /by command (registered for command discoverability).
+composer.command("by", async (ctx) => {
+  if (!ctx.from) return;
+  const userId = ctx.from.id;
+  const session = ctx.session as SessionWithSettings;
+  const settings = getSettings(session);
+
+  // First user to send becomes the owner.
+  if (settings.ownerUserId === null) {
+    setOwnerUserId(session, userId);
+    await ctx.reply(String(randomInt()));
+    return;
+  }
+
+  if (isOwner(session, userId)) {
+    await ctx.reply(String(randomInt()));
+    return;
+  }
+
+  if (settings.showUnauthorizedMessage) {
+    await ctx.reply("Not authorized");
+  }
+});
+
+// Handle text messages matching the trigger phrase.
 composer.on("message:text", async (ctx, next) => {
   const text = ctx.message.text.trim().toLowerCase();
   const session = ctx.session as SessionWithSettings;

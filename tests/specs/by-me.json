@@ -1,5 +1,16 @@
 [
   {
+    "name": "owner sends '/by' command and gets a number",
+    "steps": [
+      {
+        "send": { "text": "/by" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
     "name": "owner sends 'by me' and gets a number",
     "steps": [
       {
