@@ -1,0 +1,20 @@
+[
+  {
+    "name": "by me",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Trigger the bot to respond with a random number between 0 and 20"
+            }
+          }
+        ],
+        "send": {
+          "text": "/by"
+        }
+      }
+    ]
+  }
+]
