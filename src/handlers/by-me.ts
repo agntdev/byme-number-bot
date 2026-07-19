@@ -1,15 +1,50 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import {
+  getSettings,
+  isOwner,
+  setOwnerUserId,
+  type SessionWithSettings,
+} from "../storage.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
+/**
+ * by-me handler — responds with a random number 0–20 when the authorized owner
+ * sends the trigger phrase (default "by me", case-insensitive, trimmed).
+ *
+ * On first use by any user, that user is auto-registered as the owner.
+ * Unauthorized users see "Not authorized" if that setting is enabled.
+ */
+const composer = new Composer<Ctx>();
 
-const composer = new Composer();
+composer.on("message:text", async (ctx, next) => {
+  const text = ctx.message.text.trim().toLowerCase();
+  const session = ctx.session as SessionWithSettings;
+  const settings = getSettings(session);
+  const trigger = settings.triggerPhrase.trim().toLowerCase();
 
-composer.command("by", async (ctx) => {
-  await ctx.reply("Trigger the bot to respond with a random number between 0 and 20");
+  if (text !== trigger) return next();
+
+  const userId = ctx.from.id;
+
+  // First user to send the trigger phrase becomes the owner.
+  if (settings.ownerUserId === null) {
+    setOwnerUserId(session, userId);
+    await ctx.reply(String(randomInt()));
+    return;
+  }
+
+  if (isOwner(session, userId)) {
+    await ctx.reply(String(randomInt()));
+    return;
+  }
+
+  if (settings.showUnauthorizedMessage) {
+    await ctx.reply("Not authorized");
+  }
 });
+
+function randomInt(): number {
+  return Math.floor(Math.random() * 21);
+}
 
 export default composer;

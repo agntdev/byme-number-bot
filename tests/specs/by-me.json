@@ -1,19 +1,76 @@
 [
   {
-    "name": "by me",
+    "name": "owner sends 'by me' and gets a number",
     "steps": [
       {
+        "send": { "text": "by me", "userId": 1 },
         "expect": [
-          {
-            "method": "sendMessage",
-            "payload": {
-              "text": "Trigger the bot to respond with a random number between 0 and 20"
-            }
-          }
-        ],
-        "send": {
-          "text": "/by"
-        }
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "owner sends 'BY ME' (case-insensitive)",
+    "steps": [
+      {
+        "send": { "text": "by me", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "BY ME", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "owner sends ' by me ' with extra whitespace",
+    "steps": [
+      {
+        "send": { "text": "by me", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "  by me  ", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unauthorized user gets 'Not authorized'",
+    "steps": [
+      {
+        "send": { "text": "by me", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "by me", "userId": 2 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Not authorized" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bot ignores non-trigger messages",
+    "steps": [
+      {
+        "send": { "text": "hello", "userId": 1 },
+        "expect": []
+      },
+      {
+        "send": { "text": "random text", "userId": 1 },
+        "expect": []
       }
     ]
   }
