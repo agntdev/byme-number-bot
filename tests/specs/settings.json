@@ -1,0 +1,110 @@
+[
+  {
+    "name": "/start shows settings button",
+    "steps": [
+      {
+        "send": { "text": "/start" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "👋 Welcome! Tap a button below to get started." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "settings menu shows current settings",
+    "steps": [
+      {
+        "send": { "callback": "settings:show" },
+        "expect": [
+          { "method": "editMessageText", "payload": { "text": "⚙️ Bot settings\n\nOwner: Not set\nUnauthorized message: On\nTrigger phrase: \"by me\"" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "toggle unauthorized message off",
+    "steps": [
+      {
+        "send": { "callback": "settings:show" },
+        "expect": [
+          { "method": "editMessageText" }
+        ]
+      },
+      {
+        "send": { "callback": "settings:toggle_unauth" },
+        "expect": [
+          { "method": "editMessageText", "payload": { "text": "⚙️ Bot settings\n\nOwner: Not set\nUnauthorized message: Off\nTrigger phrase: \"by me\"" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "toggle unauthorized message back on",
+    "steps": [
+      {
+        "send": { "callback": "settings:show" },
+        "expect": [
+          { "method": "editMessageText" }
+        ]
+      },
+      {
+        "send": { "callback": "settings:toggle_unauth" },
+        "expect": [
+          { "method": "editMessageText", "payload": { "text": "⚙️ Bot settings\n\nOwner: Not set\nUnauthorized message: Off\nTrigger phrase: \"by me\"" } }
+        ]
+      },
+      {
+        "send": { "callback": "settings:toggle_unauth" },
+        "expect": [
+          { "method": "editMessageText", "payload": { "text": "⚙️ Bot settings\n\nOwner: Not set\nUnauthorized message: On\nTrigger phrase: \"by me\"" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "set owner ID",
+    "steps": [
+      {
+        "send": { "callback": "settings:show" },
+        "expect": [
+          { "method": "editMessageText" }
+        ]
+      },
+      {
+        "send": { "callback": "settings:prompt_owner" },
+        "expect": [
+          { "method": "editMessageText", "payload": { "text": "Send the Telegram user ID to set as owner.\n\nExample: 123456789" } }
+        ]
+      },
+      {
+        "send": { "text": "999888777" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "⚙️ Bot settings\n\nOwner: 999888777\nUnauthorized message: On\nTrigger phrase: \"by me\"" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "change trigger phrase",
+    "steps": [
+      {
+        "send": { "callback": "settings:show" },
+        "expect": [
+          { "method": "editMessageText" }
+        ]
+      },
+      {
+        "send": { "callback": "settings:prompt_trigger" },
+        "expect": [
+          { "method": "editMessageText", "payload": { "text": "Send the new trigger phrase.\n\nExample: by me" } }
+        ]
+      },
+      {
+        "send": { "text": "give me number" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "⚙️ Bot settings\n\nOwner: Not set\nUnauthorized message: On\nTrigger phrase: \"give me number\"" } }
+        ]
+      }
+    ]
+  }
+]
